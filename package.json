@@ -1,7 +1,7 @@
 {
   "name": "study_hello_backbone",
   "version": "1.0.0",
-  "description": "A sample Node.js app using Express 4",
+  "description": "A bakcbone study; http://arturadib.com/hello-backbonejs/",
   "main": "index.js",
   "scripts": {
     "start": "PORT=5000 foreman start",
