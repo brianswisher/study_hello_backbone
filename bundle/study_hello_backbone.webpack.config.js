@@ -2,9 +2,9 @@ var path = require('path');
 
 module.exports = {
   context: __dirname,
-  entry: './assets/javascripts/my_app.jsx',
+  entry: './assets/javascripts/study_hello_backbone.jsx',
   output: {
-    filename: 'my_app.bundle.js',
+    filename: 'study_hello_backbone.bundle.js',
     path: '../public/'
   },
   resolve: {
