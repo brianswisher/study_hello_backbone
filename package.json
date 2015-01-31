@@ -8,7 +8,7 @@
     "watch": "foreman start -f dev.procfile",
     "sync": "node_modules/browser-sync/bin/browser-sync start --server public --port 5001 --files 'public/*.html, public/*.css, public/*.js'",
     "bundle:study_hello_backbone": "cd bundle && node ../node_modules/webpack/bin/webpack -w --config study_hello_backbone.webpack.config.js",
-    "install": "napa",
+    "install": "node_modules/napa/bin/napa",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
