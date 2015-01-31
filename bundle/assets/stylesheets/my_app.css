@@ -1,0 +1,4 @@
+body {
+  font-family: "QuickSand", arial;
+}
+body * { font-family: inherit; }

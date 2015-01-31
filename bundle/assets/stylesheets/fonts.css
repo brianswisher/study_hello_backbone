@@ -1,0 +1,30 @@
+@font-face{
+  font-family:QuickSand;
+  src:url(QuickSand-Regular.otf);
+  font-weight:normal;
+  font-style:normal;
+}
+@font-face{
+  font-family:QuickSand;
+  src:url(QuickSand-Bold.otf);
+  font-weight:bold;
+  font-style:normal;
+}
+@font-face{
+  font-family:QuickSand;
+  src:url(QuickSand-BoldItalic.otf);
+  font-weight:bold;
+  font-style:italic;
+}
+@font-face{
+  font-family:QuickSand;
+  src:url(QuickSand-Light.otf);
+  font-weight:100;
+  font-style:normal;
+}
+@font-face{
+  font-family:QuickSand;
+  src:url(QuickSand-LightItalic.otf);
+  font-weight:100;
+  font-style:italic;
+}
