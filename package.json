@@ -8,7 +8,6 @@
     "watch": "foreman start -f dev.procfile",
     "sync": "node_modules/browser-sync/bin/browser-sync start --server public --port 5001 --files 'public/*.html, public/*.css, public/*.js'",
     "bundle:study_hello_backbone": "cd bundle && node ../node_modules/webpack/bin/webpack -w --config study_hello_backbone.webpack.config.js",
-    "install": "node_modules/napa/bin/napa",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -28,9 +27,6 @@
     "style-loader": "^0.8.0",
     "napa": "^1.2.0",
     "webpack": "^1.4.15"
-  },
-  "napa": {
-    "console-polyfill": "paulmillr/console-polyfill"
   },
   "engines": {
     "node": "0.10.x"
