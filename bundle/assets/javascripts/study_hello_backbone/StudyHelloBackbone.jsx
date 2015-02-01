@@ -44,7 +44,15 @@ module.exports =
         },
 
         render: function(){
-          $(this.el).html('<span style="color:black;">'+this.model.get('part1')+' '+this.model.get('part2')+'</span> &nbsp; &nbsp; <span class="swap" style="font-family:sans-serif; color:blue; cursor:pointer;">[swap]</span> <span class="delete" style="cursor:pointer; color:red; font-family:sans-serif;">[delete]</span>');
+          $(this.el).html('<span style="color:black;">'+
+            this.model.get('part1')+' '+this.model.get('part2')+
+            '</span> &nbsp; &nbsp; '+
+            '<span class="swap" '+
+              'style="font-family:sans-serif; color:blue; cursor:pointer;">'+
+                '[swap]</span> '+
+            '<span class="delete" '+
+              'style="cursor:pointer; color:red; font-family:sans-serif;">'+
+                '[delete]</span>');
           return this;
         },
 
