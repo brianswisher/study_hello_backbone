@@ -12,14 +12,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "express": "^4.11.0",
+    "backbone": "^1.1.2",
     "datejs": "^1.0.0-rc3",
+    "express": "^4.11.0",
     "file-loader": "^0.8.1",
     "jquery": "^1.11.2",
     "keymaster": "^1.6.2",
     "lodash": "^2.4.1",
-    "react": "^0.12.2",
     "napa": "^1.2.0",
+    "react": "^0.12.2",
     "url-loader": "^0.5.5"
   },
   "devDependencies": {
