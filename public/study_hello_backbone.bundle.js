@@ -77,14 +77,28 @@
 
 	    componentDidMount: function() {
 
+	      var Item = Backbone.Model.extend({
+	        defaults:{
+	          part1: 'hello',
+	          part2: 'world'
+	        }
+	      });
+
+	      var List = Backbone.Collection.extend({
+	        model: Item
+	      });
+
 	      var ListView = Backbone.View.extend({
 	        el: $('#viewport'),
-
 	        events: {
 	          'click button#add': 'addItem'
 	        },
+
 	        initialize: function(){
-	          _.bindAll(this, 'render');
+	          _.bindAll(this, 'render', 'addItem', 'appendItem');
+
+	          this.collection = new List();
+	          this.collection.bind('add', this.appendItem);
 
 	          this.counter = 0;
 	          this.render();
@@ -97,7 +111,15 @@
 
 	        addItem:function(){
 	          this.counter++;
-	          $('ul', this.el).append("<li>hello world"+this.counter+"</li>");
+	          var item = new Item();
+	          item.set({
+	            part2: item.get('part2') + this.counter
+	          });
+	          this.collection.add(item);
+	        },
+
+	        appendItem: function(item){
+	          $('ul', this.el).append("<li>"+item.get('part1')+" "+item.get('part2')+"</li>");
 	        }
 	      });
 
