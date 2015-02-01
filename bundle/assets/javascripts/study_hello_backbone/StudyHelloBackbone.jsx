@@ -18,14 +18,24 @@ module.exports =
       var ListView = Backbone.View.extend({
         el: $('#viewport'),
 
+        events: {
+          'click button#add': 'addItem'
+        },
         initialize: function(){
           _.bindAll(this, 'render');
 
+          this.counter = 0;
           this.render();
         },
 
         render: function(){
-          $(this.el).append("<ul> <li>hello world</li> </ul>");
+          $(this.el).append("<button id='add'>Add list item</button>");
+          $(this.el).append("<ul></ul>");
+        },
+
+        addItem:function(){
+          this.counter++;
+          $('ul', this.el).append("<li>hello world"+this.counter+"</li>");
         }
       });
 
