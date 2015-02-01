@@ -65,8 +65,6 @@
 	var $ = __webpack_require__(12);
 	var Backbone = __webpack_require__(14);
 	var _ = __webpack_require__(13);
-	// var keymaster = require('keymaster');
-	// var data = preload_data;
 
 	var React = __webpack_require__(6);
 
@@ -78,7 +76,7 @@
 	    componentDidMount: function() {
 
 	      var Item = Backbone.Model.extend({
-	        defaults:{
+	        defaults: {
 	          part1: 'hello',
 	          part2: 'world'
 	        }
@@ -86,6 +84,17 @@
 
 	      var List = Backbone.Collection.extend({
 	        model: Item
+	      });
+
+	      var ItemView = Backbone.View.extend({
+	        tagName: 'li',
+	        initialize: function(){
+	          _.bindAll(this, 'render');
+	        },
+	        render: function(){
+	          $(this.el).html('<span>'+this.model.get('part1')+' '+this.model.get('part2')+'</span>');
+	          return this;
+	        }
 	      });
 
 	      var ListView = Backbone.View.extend({
@@ -119,7 +128,10 @@
 	        },
 
 	        appendItem: function(item){
-	          $('ul', this.el).append("<li>"+item.get('part1')+" "+item.get('part2')+"</li>");
+	          var itemView = new ItemView({
+	            model: item
+	          });
+	          $('ul', this.el).append(itemView.render().el);
 	        }
 	      });
 
