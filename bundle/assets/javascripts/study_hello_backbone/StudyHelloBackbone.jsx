@@ -13,9 +13,9 @@ module.exports =
 
     componentDidMount: function() {
 
-      Backbone.sync = function(method, model, success, error){
-        success();
-      }
+      // Backbone.sync = function(method, model, success, error){
+      //   success();
+      // }
 
       var Item = Backbone.Model.extend({
         defaults: {
@@ -25,7 +25,8 @@ module.exports =
       });
 
       var List = Backbone.Collection.extend({
-        model: Item
+        model:Item,
+        url:"/api/items"
       });
 
       var ItemView = Backbone.View.extend({
@@ -45,7 +46,7 @@ module.exports =
 
         render: function(){
           $(this.el).html('<span style="color:black;">'+
-            this.model.get('part1')+' '+this.model.get('part2')+
+            this.model.get('part1')+' '+this.model.get('name')+' '+this.model.get('part2')+
             '</span> &nbsp; &nbsp; '+
             '<span class="swap" '+
               'style="font-family:sans-serif; color:blue; cursor:pointer;">'+
@@ -69,6 +70,7 @@ module.exports =
         },
 
         remove: function(){
+          this.model.collection.remove(this.model);
           this.model.destroy();
         }
       });
@@ -76,28 +78,38 @@ module.exports =
       var ListView = Backbone.View.extend({
         el: $('#viewport'),
         events: {
-          'click button#add': 'addItem'
+          'click button#add': 'addItem',
+          'change input#name': 'changeName'
         },
 
         initialize: function(){
-          _.bindAll(this, 'render', 'addItem', 'appendItem');
+          _.bindAll(this, 'render', 'addItem', 'appendItem', 'changeName');
 
           this.collection = new List();
+          this.collection.fetch();
           this.collection.bind('add', this.appendItem);
 
           this.counter = 0;
+          this.name = 'orange';
           this.render();
         },
 
         render: function(){
           $(this.el).append("<button id='add'>Add list item</button>");
+          $(this.el).append("<input type='text' id='name' value='"+this.name+"' />");
           $(this.el).append("<ul></ul>");
         },
 
-        addItem:function(){
+        changeName:function(e){
+          $target = $(e.target);
+          this.name = $target.val();
+        },
+
+        addItem:function(e){
           this.counter++;
           var item = new Item();
           item.set({
+            name: this.name,
             part2: item.get('part2') + this.counter
           });
           this.collection.add(item);

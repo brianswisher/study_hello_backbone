@@ -75,9 +75,9 @@
 
 	    componentDidMount: function() {
 
-	      Backbone.sync = function(method, model, success, error){
-	        success();
-	      }
+	      // Backbone.sync = function(method, model, success, error){
+	      //   success();
+	      // }
 
 	      var Item = Backbone.Model.extend({
 	        defaults: {
@@ -87,7 +87,8 @@
 	      });
 
 	      var List = Backbone.Collection.extend({
-	        model: Item
+	        model:Item,
+	        url:"/api/items"
 	      });
 
 	      var ItemView = Backbone.View.extend({
@@ -107,7 +108,7 @@
 
 	        render: function(){
 	          $(this.el).html('<span style="color:black;">'+
-	            this.model.get('part1')+' '+this.model.get('part2')+
+	            this.model.get('part1')+' '+this.model.get('name')+' '+this.model.get('part2')+
 	            '</span> &nbsp; &nbsp; '+
 	            '<span class="swap" '+
 	              'style="font-family:sans-serif; color:blue; cursor:pointer;">'+
@@ -131,6 +132,7 @@
 	        },
 
 	        remove: function(){
+	          this.model.collection.remove(this.model);
 	          this.model.destroy();
 	        }
 	      });
@@ -138,28 +140,38 @@
 	      var ListView = Backbone.View.extend({
 	        el: $('#viewport'),
 	        events: {
-	          'click button#add': 'addItem'
+	          'click button#add': 'addItem',
+	          'change input#name': 'changeName'
 	        },
 
 	        initialize: function(){
-	          _.bindAll(this, 'render', 'addItem', 'appendItem');
+	          _.bindAll(this, 'render', 'addItem', 'appendItem', 'changeName');
 
 	          this.collection = new List();
+	          this.collection.fetch();
 	          this.collection.bind('add', this.appendItem);
 
 	          this.counter = 0;
+	          this.name = 'orange';
 	          this.render();
 	        },
 
 	        render: function(){
 	          $(this.el).append("<button id='add'>Add list item</button>");
+	          $(this.el).append("<input type='text' id='name' value='"+this.name+"' />");
 	          $(this.el).append("<ul></ul>");
 	        },
 
-	        addItem:function(){
+	        changeName:function(e){
+	          $target = $(e.target);
+	          this.name = $target.val();
+	        },
+
+	        addItem:function(e){
 	          this.counter++;
 	          var item = new Item();
 	          item.set({
+	            name: this.name,
 	            part2: item.get('part2') + this.counter
 	          });
 	          this.collection.add(item);
@@ -25593,7 +25605,7 @@
 	var ReactPropTypeLocationNames = __webpack_require__(61);
 
 	var deprecated = __webpack_require__(41);
-	var emptyFunction = __webpack_require__(103);
+	var emptyFunction = __webpack_require__(101);
 
 	/**
 	 * Collection of methods that allow declaration and validation of props that are
@@ -25949,9 +25961,9 @@
 
 	var ReactElement = __webpack_require__(27);
 	var ReactInstanceHandles = __webpack_require__(32);
-	var ReactMarkupChecksum = __webpack_require__(101);
+	var ReactMarkupChecksum = __webpack_require__(102);
 	var ReactServerRenderingTransaction =
-	  __webpack_require__(102);
+	  __webpack_require__(103);
 
 	var instantiateReactComponent = __webpack_require__(62);
 	var invariant = __webpack_require__(51);
@@ -26830,7 +26842,7 @@
 
 	"use strict";
 
-	var emptyFunction = __webpack_require__(103);
+	var emptyFunction = __webpack_require__(101);
 
 	/**
 	 * Similar to invariant but only logs a warning if the condition is not met.
@@ -27946,7 +27958,7 @@
 	"use strict";
 
 	var assign = __webpack_require__(40);
-	var emptyFunction = __webpack_require__(103);
+	var emptyFunction = __webpack_require__(101);
 	var invariant = __webpack_require__(51);
 	var joinClasses = __webpack_require__(108);
 	var warning = __webpack_require__(49);
@@ -30370,7 +30382,7 @@
 
 	var EventConstants = __webpack_require__(50);
 
-	var emptyFunction = __webpack_require__(103);
+	var emptyFunction = __webpack_require__(101);
 
 	var topLevelTypes = EventConstants.topLevelTypes;
 
@@ -30432,7 +30444,7 @@
 	"use strict";
 
 	var ReactDOMIDOperations = __webpack_require__(126);
-	var ReactMarkupChecksum = __webpack_require__(101);
+	var ReactMarkupChecksum = __webpack_require__(102);
 	var ReactMount = __webpack_require__(34);
 	var ReactPerf = __webpack_require__(36);
 	var ReactReconcileTransaction = __webpack_require__(127);
@@ -30558,7 +30570,7 @@
 	var Transaction = __webpack_require__(107);
 
 	var assign = __webpack_require__(40);
-	var emptyFunction = __webpack_require__(103);
+	var emptyFunction = __webpack_require__(101);
 
 	var RESET_BATCHED_UPDATES = {
 	  initialize: emptyFunction,
@@ -32922,6 +32934,44 @@
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
+	 * @providesModule emptyFunction
+	 */
+
+	function makeEmptyFunction(arg) {
+	  return function() {
+	    return arg;
+	  };
+	}
+
+	/**
+	 * This function accepts and discards inputs; it has no side effects. This is
+	 * primarily useful idiomatically for overridable function endpoints which
+	 * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
+	 */
+	function emptyFunction() {}
+
+	emptyFunction.thatReturns = makeEmptyFunction;
+	emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
+	emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
+	emptyFunction.thatReturnsNull = makeEmptyFunction(null);
+	emptyFunction.thatReturnsThis = function() { return this; };
+	emptyFunction.thatReturnsArgument = function(arg) { return arg; };
+
+	module.exports = emptyFunction;
+
+
+/***/ },
+/* 102 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2014, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
 	 * @providesModule ReactMarkupChecksum
 	 */
 
@@ -32963,7 +33013,7 @@
 
 
 /***/ },
-/* 102 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -32986,7 +33036,7 @@
 	var Transaction = __webpack_require__(107);
 
 	var assign = __webpack_require__(40);
-	var emptyFunction = __webpack_require__(103);
+	var emptyFunction = __webpack_require__(101);
 
 	/**
 	 * Provides a `CallbackQueue` queue for collecting `onDOMReady` callbacks
@@ -33077,44 +33127,6 @@
 	PooledClass.addPoolingTo(ReactServerRenderingTransaction);
 
 	module.exports = ReactServerRenderingTransaction;
-
-
-/***/ },
-/* 103 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2014, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule emptyFunction
-	 */
-
-	function makeEmptyFunction(arg) {
-	  return function() {
-	    return arg;
-	  };
-	}
-
-	/**
-	 * This function accepts and discards inputs; it has no side effects. This is
-	 * primarily useful idiomatically for overridable function endpoints which
-	 * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
-	 */
-	function emptyFunction() {}
-
-	emptyFunction.thatReturns = makeEmptyFunction;
-	emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
-	emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
-	emptyFunction.thatReturnsNull = makeEmptyFunction(null);
-	emptyFunction.thatReturnsThis = function() { return this; };
-	emptyFunction.thatReturnsArgument = function(arg) { return arg; };
-
-	module.exports = emptyFunction;
 
 
 /***/ },
@@ -36178,7 +36190,7 @@
 	var PooledClass = __webpack_require__(52);
 
 	var assign = __webpack_require__(40);
-	var emptyFunction = __webpack_require__(103);
+	var emptyFunction = __webpack_require__(101);
 	var getEventTarget = __webpack_require__(133);
 
 	/**
@@ -37402,7 +37414,7 @@
 	 * @typechecks
 	 */
 
-	var emptyFunction = __webpack_require__(103);
+	var emptyFunction = __webpack_require__(101);
 
 	/**
 	 * Upstream version of event listener. Does not take into account specific
@@ -39393,9 +39405,9 @@
 
 	var ExecutionEnvironment = __webpack_require__(43);
 
-	var createNodesFromMarkup = __webpack_require__(164);
-	var emptyFunction = __webpack_require__(103);
-	var getMarkupWrap = __webpack_require__(163);
+	var createNodesFromMarkup = __webpack_require__(163);
+	var emptyFunction = __webpack_require__(101);
+	var getMarkupWrap = __webpack_require__(164);
 	var invariant = __webpack_require__(51);
 
 	var OPEN_TAG_NAME_EXP = /^(<[^ \/>]+)/;
@@ -39572,6 +39584,99 @@
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
+	 * @providesModule createNodesFromMarkup
+	 * @typechecks
+	 */
+
+	/*jslint evil: true, sub: true */
+
+	var ExecutionEnvironment = __webpack_require__(43);
+
+	var createArrayFrom = __webpack_require__(165);
+	var getMarkupWrap = __webpack_require__(164);
+	var invariant = __webpack_require__(51);
+
+	/**
+	 * Dummy container used to render all markup.
+	 */
+	var dummyNode =
+	  ExecutionEnvironment.canUseDOM ? document.createElement('div') : null;
+
+	/**
+	 * Pattern used by `getNodeName`.
+	 */
+	var nodeNamePattern = /^\s*<(\w+)/;
+
+	/**
+	 * Extracts the `nodeName` of the first element in a string of markup.
+	 *
+	 * @param {string} markup String of markup.
+	 * @return {?string} Node name of the supplied markup.
+	 */
+	function getNodeName(markup) {
+	  var nodeNameMatch = markup.match(nodeNamePattern);
+	  return nodeNameMatch && nodeNameMatch[1].toLowerCase();
+	}
+
+	/**
+	 * Creates an array containing the nodes rendered from the supplied markup. The
+	 * optionally supplied `handleScript` function will be invoked once for each
+	 * <script> element that is rendered. If no `handleScript` function is supplied,
+	 * an exception is thrown if any <script> elements are rendered.
+	 *
+	 * @param {string} markup A string of valid HTML markup.
+	 * @param {?function} handleScript Invoked once for each rendered <script>.
+	 * @return {array<DOMElement|DOMTextNode>} An array of rendered nodes.
+	 */
+	function createNodesFromMarkup(markup, handleScript) {
+	  var node = dummyNode;
+	  ("production" !== process.env.NODE_ENV ? invariant(!!dummyNode, 'createNodesFromMarkup dummy not initialized') : invariant(!!dummyNode));
+	  var nodeName = getNodeName(markup);
+
+	  var wrap = nodeName && getMarkupWrap(nodeName);
+	  if (wrap) {
+	    node.innerHTML = wrap[1] + markup + wrap[2];
+
+	    var wrapDepth = wrap[0];
+	    while (wrapDepth--) {
+	      node = node.lastChild;
+	    }
+	  } else {
+	    node.innerHTML = markup;
+	  }
+
+	  var scripts = node.getElementsByTagName('script');
+	  if (scripts.length) {
+	    ("production" !== process.env.NODE_ENV ? invariant(
+	      handleScript,
+	      'createNodesFromMarkup(...): Unexpected <script> element rendered.'
+	    ) : invariant(handleScript));
+	    createArrayFrom(scripts).forEach(handleScript);
+	  }
+
+	  var nodes = createArrayFrom(node.childNodes);
+	  while (node.lastChild) {
+	    node.removeChild(node.lastChild);
+	  }
+	  return nodes;
+	}
+
+	module.exports = createNodesFromMarkup;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(44)))
+
+/***/ },
+/* 164 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2013-2014, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
 	 * @providesModule getMarkupWrap
 	 */
 
@@ -39677,99 +39782,6 @@
 
 
 	module.exports = getMarkupWrap;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(44)))
-
-/***/ },
-/* 164 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {/**
-	 * Copyright 2013-2014, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule createNodesFromMarkup
-	 * @typechecks
-	 */
-
-	/*jslint evil: true, sub: true */
-
-	var ExecutionEnvironment = __webpack_require__(43);
-
-	var createArrayFrom = __webpack_require__(165);
-	var getMarkupWrap = __webpack_require__(163);
-	var invariant = __webpack_require__(51);
-
-	/**
-	 * Dummy container used to render all markup.
-	 */
-	var dummyNode =
-	  ExecutionEnvironment.canUseDOM ? document.createElement('div') : null;
-
-	/**
-	 * Pattern used by `getNodeName`.
-	 */
-	var nodeNamePattern = /^\s*<(\w+)/;
-
-	/**
-	 * Extracts the `nodeName` of the first element in a string of markup.
-	 *
-	 * @param {string} markup String of markup.
-	 * @return {?string} Node name of the supplied markup.
-	 */
-	function getNodeName(markup) {
-	  var nodeNameMatch = markup.match(nodeNamePattern);
-	  return nodeNameMatch && nodeNameMatch[1].toLowerCase();
-	}
-
-	/**
-	 * Creates an array containing the nodes rendered from the supplied markup. The
-	 * optionally supplied `handleScript` function will be invoked once for each
-	 * <script> element that is rendered. If no `handleScript` function is supplied,
-	 * an exception is thrown if any <script> elements are rendered.
-	 *
-	 * @param {string} markup A string of valid HTML markup.
-	 * @param {?function} handleScript Invoked once for each rendered <script>.
-	 * @return {array<DOMElement|DOMTextNode>} An array of rendered nodes.
-	 */
-	function createNodesFromMarkup(markup, handleScript) {
-	  var node = dummyNode;
-	  ("production" !== process.env.NODE_ENV ? invariant(!!dummyNode, 'createNodesFromMarkup dummy not initialized') : invariant(!!dummyNode));
-	  var nodeName = getNodeName(markup);
-
-	  var wrap = nodeName && getMarkupWrap(nodeName);
-	  if (wrap) {
-	    node.innerHTML = wrap[1] + markup + wrap[2];
-
-	    var wrapDepth = wrap[0];
-	    while (wrapDepth--) {
-	      node = node.lastChild;
-	    }
-	  } else {
-	    node.innerHTML = markup;
-	  }
-
-	  var scripts = node.getElementsByTagName('script');
-	  if (scripts.length) {
-	    ("production" !== process.env.NODE_ENV ? invariant(
-	      handleScript,
-	      'createNodesFromMarkup(...): Unexpected <script> element rendered.'
-	    ) : invariant(handleScript));
-	    createArrayFrom(scripts).forEach(handleScript);
-	  }
-
-	  var nodes = createArrayFrom(node.childNodes);
-	  while (node.lastChild) {
-	    node.removeChild(node.lastChild);
-	  }
-	  return nodes;
-	}
-
-	module.exports = createNodesFromMarkup;
 	
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(44)))
 
