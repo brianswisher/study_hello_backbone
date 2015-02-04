@@ -18,6 +18,8 @@ module.exports =
       // }
 
       var Item = Backbone.Model.extend({
+        urlRoot: '/api/items',
+        idAttribute: "_id",
         defaults: {
           part1: 'hello',
           part2: 'world'
@@ -46,7 +48,7 @@ module.exports =
 
         render: function(){
           $(this.el).html('<span style="color:black;">'+
-            this.model.get('part1')+' '+this.model.get('name')+' '+this.model.get('part2')+
+            this.model.get('part1')+' '+this.model.get('part2')+
             '</span> &nbsp; &nbsp; '+
             '<span class="swap" '+
               'style="font-family:sans-serif; color:blue; cursor:pointer;">'+
@@ -85,18 +87,22 @@ module.exports =
         initialize: function(){
           _.bindAll(this, 'render', 'addItem', 'appendItem', 'changeName');
 
-          this.collection = new List();
-          this.collection.fetch();
-          this.collection.bind('add', this.appendItem);
+          var that = this;
 
           this.counter = 0;
-          this.name = 'orange';
+
+          this.collection = new List();
+          this.collection.fetch({context:this.collection}).done(function(){
+            that.counter = this.length;
+          });
+          this.collection.bind('add', this.appendItem);
+
           this.render();
         },
 
         render: function(){
           $(this.el).append("<button id='add'>Add list item</button>");
-          $(this.el).append("<input type='text' id='name' value='"+this.name+"' />");
+          $(this.el).append("<input type='text' id='part1' value='hello' />");
           $(this.el).append("<ul></ul>");
         },
 
@@ -108,10 +114,12 @@ module.exports =
         addItem:function(e){
           this.counter++;
           var item = new Item();
+          var $part1 = $('#part1');
           item.set({
-            name: this.name,
+            part1: $part1.val(),
             part2: item.get('part2') + this.counter
           });
+          item.save();
           this.collection.add(item);
         },
 
